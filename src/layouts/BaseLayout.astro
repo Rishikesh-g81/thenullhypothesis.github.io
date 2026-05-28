@@ -50,7 +50,21 @@ const {
       <li><a href="/travel" aria-current={activeNav === 'travel' ? 'page' : undefined}>Travel</a></li>
       <li><a href="#" class="nav-cta" id="subscribe-link">Subscribe →</a></li>
     </ul>
+    <button class="nav-toggle" id="nav-toggle" aria-label="Open menu">
+      <span></span><span></span><span></span>
+    </button>
   </nav>
+
+  <div class="nav-overlay" id="nav-overlay"></div>
+  <div class="nav-drawer" id="nav-drawer">
+    <button class="nav-drawer-close" id="nav-drawer-close" aria-label="Close menu">✕</button>
+    <ul>
+      <li><a href="/">About</a></li>
+      <li><a href="/writing">Writing</a></li>
+      <li><a href="/travel">Travel</a></li>
+      <li><a href="#" class="nav-cta">Subscribe →</a></li>
+    </ul>
+  </div>
 
   <slot />
 
@@ -97,4 +111,26 @@ const {
   syncLmark();
   logo?.addEventListener('click', flip);
   anomaly?.addEventListener('click', flip);
+
+  // Mobile nav drawer
+  const navToggle  = document.getElementById('nav-toggle');
+  const navDrawer  = document.getElementById('nav-drawer');
+  const navOverlay = document.getElementById('nav-overlay');
+  const navClose   = document.getElementById('nav-drawer-close');
+
+  function openDrawer() {
+    navDrawer?.classList.add('open');
+    navOverlay?.classList.add('show');
+    document.body.style.overflow = 'hidden';
+  }
+  function closeDrawer() {
+    navDrawer?.classList.remove('open');
+    navOverlay?.classList.remove('show');
+    document.body.style.overflow = '';
+  }
+
+  navToggle?.addEventListener('click', openDrawer);
+  navClose?.addEventListener('click', closeDrawer);
+  navOverlay?.addEventListener('click', closeDrawer);
+  navDrawer?.querySelectorAll('a').forEach(a => a.addEventListener('click', closeDrawer));
 </script>
