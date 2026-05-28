@@ -53,7 +53,7 @@ const SCRATCHPAD = [
           Experiments in progress — check back soon.
         </p>
       ) : sorted.map(post => (
-        <a class="w-row" href={`/posts/${post.slug}`} data-cats={post.data.categories.join(',')}>
+        <a class="w-row" href={`/posts/${post.id.replace(/\.mdx?$/, '')}`} data-cats={post.data.categories.join(',')}>
           <div class="w-row-left">
             <div class="w-row-cat">{post.data.categories.join(' × ')}</div>
             <div class="w-row-title">{post.data.title}</div>
