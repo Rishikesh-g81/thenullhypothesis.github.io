@@ -1,0 +1,46 @@
+---
+import BaseLayout from './BaseLayout.astro';
+
+interface Props {
+  title:      string;
+  date:       Date;
+  categories: string[];
+  excerpt?:   string;
+}
+
+const { title, date, categories } = Astro.props;
+
+const fmtDate = (d: Date) =>
+  d.toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' });
+---
+
+<BaseLayout title={`${title} — The Null Hypothesis`}>
+  <main>
+    <div class="post-wrap">
+      <a href="/writing" class="back-link">← Writing</a>
+
+      <header class="post-header">
+        <span class="post-category">{categories.join(' × ')}</span>
+        <h1>{title}</h1>
+        <div class="post-header-meta">{fmtDate(date)}</div>
+      </header>
+
+      <article class="prose">
+        <slot />
+      </article>
+    </div>
+  </main>
+
+  <footer>
+    <div class="footer-left">
+      <div class="footer-name">The Null Hypothesis</div>
+      <div class="footer-tag h0x">Reject the null.</div>
+      <div class="footer-tag h1x">H₁ confirmed.</div>
+    </div>
+    <div class="footer-links">
+      <a href="/">About</a>
+      <a href="/writing">Writing</a>
+      <a href="/travel">Travel</a>
+    </div>
+  </footer>
+</BaseLayout>

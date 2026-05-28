@@ -1,0 +1,99 @@
+---
+import '../styles/global.css';
+
+interface Props {
+  title?: string;
+  description?: string;
+  activeNav?: string;
+}
+
+const {
+  title = 'The Null Hypothesis',
+  description = 'A polymath blog finding the hidden wire between unrelated things.',
+  activeNav,
+} = Astro.props;
+---
+
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>{title}</title>
+  <meta name="description" content={description} />
+  <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+
+  <script is:inline>
+    (function () {
+      const m = localStorage.getItem('h-mode') || 'h0';
+      document.documentElement.dataset.mode = m;
+    })();
+  </script>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link
+    href="https://fonts.googleapis.com/css2?family=Caveat:wght@400;600&family=Playfair+Display:ital,wght@0,700;0,900;1,400;1,700&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@300;400&display=swap"
+    rel="stylesheet"
+  />
+</head>
+<body>
+
+  <nav>
+    <div class="logo" id="logo">
+      The Null Hypothesis
+      <span class="lmark" id="lmark">H₀</span>
+    </div>
+    <ul class="nav-links">
+      <li><a href="/writing" aria-current={activeNav === 'writing' ? 'page' : undefined}>Writing</a></li>
+      <li><a href="/travel" aria-current={activeNav === 'travel' ? 'page' : undefined}>Travel</a></li>
+      <li><a href="#" class="nav-cta" id="subscribe-link">Subscribe →</a></li>
+    </ul>
+  </nav>
+
+  <slot />
+
+  <div class="anomaly" id="anomaly">
+    <span class="anomaly-cursor">_</span>
+  </div>
+
+  <div class="toast" id="toast"></div>
+
+</body>
+</html>
+
+<script>
+  const html    = document.documentElement;
+  const lmark   = document.getElementById('lmark') as HTMLElement | null;
+  const toast   = document.getElementById('toast') as HTMLElement | null;
+  const logo    = document.getElementById('logo');
+  const anomaly = document.getElementById('anomaly');
+  let toastTimer: ReturnType<typeof setTimeout> | null = null;
+
+  function showToast(msg: string) {
+    if (!toast) return;
+    toast.textContent = msg;
+    toast.classList.add('show');
+    if (toastTimer) clearTimeout(toastTimer);
+    toastTimer = setTimeout(() => toast?.classList.remove('show'), 3500);
+  }
+
+  function syncLmark() {
+    if (lmark) lmark.textContent = (html.dataset.mode || 'h0') === 'h0' ? 'H₀' : 'H₁';
+  }
+
+  function flip() {
+    const next = (html.dataset.mode || 'h0') === 'h0' ? 'h1' : 'h0';
+    html.dataset.mode = next;
+    localStorage.setItem('h-mode', next);
+    syncLmark();
+    if (next === 'h1' && !localStorage.getItem('h1-discovered')) {
+      localStorage.setItem('h1-discovered', 'true');
+      setTimeout(() => showToast('H₁ confirmed. Something has changed.'), 450);
+    }
+  }
+
+  syncLmark();
+  logo?.addEventListener('click', flip);
+  anomaly?.addEventListener('click', flip);
+</script>

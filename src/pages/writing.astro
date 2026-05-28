@@ -1,0 +1,151 @@
+---
+import { getCollection } from 'astro:content';
+import BaseLayout from '../layouts/BaseLayout.astro';
+
+const posts = await getCollection('posts');
+const sorted = posts.sort((a, b) => b.data.date.valueOf() - a.data.date.valueOf());
+
+const allCats = [...new Set(posts.flatMap(p => p.data.categories))].sort();
+
+const fmtDate = (d: Date) =>
+  d.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
+
+const SCRATCHPAD = [
+  { folder: '02:14_AM_Drafts', files: [
+    { name: 'prometheus_v4_actually_good.md',     mod: 'modified 2 hours ago',  len: '1,100 words, sent anyway' },
+    { name: 'ants_and_architects_uncut.md',       mod: 'modified yesterday',    len: '1,400 words, cut 600' },
+    { name: 'the_calendar_invite_i_declined.md',  mod: 'modified 4 days ago',   len: '200 words, no conclusion' },
+  ]},
+  { folder: 'Scrapped_Concepts', files: [
+    { name: 'empire_of_the_in_between.md', mod: 'abandoned 2 weeks ago',  len: 'Read at your own risk' },
+    { name: 'manifesto_v7.md',             mod: 'abandoned 1 month ago',  len: '9 drafts, 0 published' },
+    { name: 'a_theory_of_quiet_rooms.md',  mod: 'abandoned 3 months ago', len: 'unfinished, probably forever' },
+  ]},
+  { folder: 'Unfiltered', files: [
+    { name: 'the_letter_i_didnt_send.md', mod: 'modified Mar 9, 2026',  len: '1,247 words you should not read' },
+    { name: 'on_envy.md',                 mod: 'modified Feb 22, 2026', len: '618 words of honest mess' },
+    { name: 'what_i_actually_think.md',   mod: 'modified Jan 11, 2026', len: 'Read at your own risk' },
+  ]},
+];
+---
+
+<BaseLayout title="Writing — The Null Hypothesis" activeNav="writing">
+
+  <!-- H₀: publication archive -->
+  <div class="h0x">
+    <div class="page-header">
+      <div class="page-eyebrow">H₀ · The Publication</div>
+      <h1 class="page-title">Writing</h1>
+      <p class="page-sub">Essays, arguments, and slow thoughts on systems, philosophy, and what happens when you stop accepting the defaults.</p>
+    </div>
+
+    <div class="w-filters">
+      <button class="w-pill on" data-cat="all">All</button>
+      {allCats.map(cat => (
+        <button class="w-pill" data-cat={cat}>{cat}</button>
+      ))}
+      <button class="w-pill lure" id="lure-drafts">[ Drafts ]</button>
+    </div>
+
+    <div class="w-list" id="w-list">
+      {sorted.length === 0 ? (
+        <p style="padding: 3rem 0; color: var(--muted); font-style: italic; opacity: 0.6;">
+          Experiments in progress — check back soon.
+        </p>
+      ) : sorted.map(post => (
+        <a class="w-row" href={`/posts/${post.slug}`} data-cats={post.data.categories.join(',')}>
+          <div class="w-row-left">
+            <div class="w-row-cat">{post.data.categories.join(' × ')}</div>
+            <div class="w-row-title">{post.data.title}</div>
+            <div class="w-row-excerpt">{post.data.excerpt}</div>
+          </div>
+          <div class="w-row-meta">{fmtDate(post.data.date)}</div>
+        </a>
+      ))}
+    </div>
+  </div>
+
+  <!-- H₁: scratchpad terminal -->
+  <div class="h1x">
+    <div class="page-header">
+      <div class="page-eyebrow">H₁ · The Scratchpad</div>
+      <h1 class="page-title" style="font-family:'JetBrains Mono',monospace;font-weight:400;font-size:clamp(1.8rem,3vw,2.4rem);letter-spacing:0;">
+        ~/scratchpad <span class="w-term-cursor"></span>
+      </h1>
+      <p class="page-sub">Half-baked. Late-night. Vulnerable. Not for the index.</p>
+    </div>
+
+    <div class="w-term">
+      <div class="w-term-prompt">ls -la ~/scratchpad/</div>
+      {SCRATCHPAD.map(folder => (
+        <>
+          <div class="w-term-folder">📁 {folder.folder}/</div>
+          {folder.files.map(file => (
+            <a class="w-term-file" href="#">
+              <span class="w-term-name">{file.name}</span>
+              <span class="w-term-mod">{file.mod}</span>
+              <span class="w-term-len">{file.len}</span>
+            </a>
+          ))}
+        </>
+      ))}
+      <div class="w-term-prompt" style="margin-top:2.5rem;">whoami</div>
+      <div style="padding-left:0.4rem;color:var(--muted);font-size:0.78rem;">
+        someone who shouldn't have published any of this.
+      </div>
+    </div>
+  </div>
+
+  <footer>
+    <div class="footer-left">
+      <div class="footer-name">The Null Hypothesis</div>
+      <div class="footer-tag h0x">Reject the null.</div>
+      <div class="footer-tag h1x">H₁ confirmed.</div>
+    </div>
+    <div class="footer-links">
+      <a href="/">About</a>
+      <a href="/travel">Travel</a>
+    </div>
+  </footer>
+
+</BaseLayout>
+
+<script>
+  // Category filter
+  const pills = document.querySelectorAll<HTMLButtonElement>('.w-pill:not(.lure)');
+  const rows  = document.querySelectorAll<HTMLElement>('.w-row');
+
+  pills.forEach(pill => {
+    pill.addEventListener('click', () => {
+      pills.forEach(p => p.classList.remove('on'));
+      pill.classList.add('on');
+      const cat = pill.dataset.cat || 'all';
+      rows.forEach(row => {
+        const cats = (row.dataset.cats || '').split(',');
+        (row as HTMLElement).style.display = (cat === 'all' || cats.includes(cat)) ? '' : 'none';
+      });
+    });
+  });
+
+  // Drafts lure
+  const lure = document.getElementById('lure-drafts');
+  const toast = document.getElementById('toast') as HTMLElement | null;
+
+  function showToast(msg: string) {
+    if (!toast) return;
+    toast.textContent = msg;
+    toast.classList.add('show');
+    setTimeout(() => toast?.classList.remove('show'), 3500);
+  }
+
+  lure?.addEventListener('click', () => {
+    lure.classList.add('shake');
+    const orig = lure.textContent;
+    lure.textContent = '[ Access Denied ]';
+    setTimeout(() => {
+      lure.classList.remove('shake');
+      lure.textContent = orig;
+    }, 700);
+    showToast('Try the alternative. Click the H.');
+  });
+</script>

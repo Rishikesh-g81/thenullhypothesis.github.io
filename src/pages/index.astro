@@ -1,0 +1,80 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+---
+
+<BaseLayout title="The Null Hypothesis">
+
+  <!-- H₀: polished split layout -->
+  <div class="about-split h0x">
+    <div
+      class="about-photo"
+      style="background-image:url('/rishi.jpeg')"
+    ></div>
+    <div class="about-text">
+      <div class="page-eyebrow">H₀ · The official bio</div>
+      <h1 class="about-name">Rishi<br>Gopalakrishnan</h1>
+      <div class="about-role">
+        Systems Architect by design<br>
+        Polymath by Instinct<br>
+        Traveler by breed
+      </div>
+      <p class="about-body">
+        In statistics, the null hypothesis is the default assumption — that nothing has changed,
+        that observed differences are mere noise. The Null Hypothesis is my exploration of the
+        opposite premise: that the patterns we dismiss as coincidence are often the signal.
+      </p>
+      <p class="about-body">
+        By day I architect software systems for a living. By night I write about the connections
+        between finance, biology, philosophy, and the systems that quietly govern everything in
+        between. When I'm not at a desk, I'm somewhere far from one.
+      </p>
+      <div class="about-socials">
+        <a href="https://twitter.com" target="_blank" rel="noopener">Twitter</a>
+        <a href="https://linkedin.com" target="_blank" rel="noopener">LinkedIn</a>
+        <a href="/rss.xml">RSS</a>
+        <a href="mailto:rishikesh.gopalakrishnan81@gmail.com">Email</a>
+      </div>
+    </div>
+  </div>
+
+  <!-- H₁: confessional full-width -->
+  <div class="about-h1 h1x">
+    <div
+      class="about-h1-photo"
+      style="background-image:url('https://images.unsplash.com/photo-1474487548417-781cb71495f3?w=1400&auto=format&fit=crop&q=80')"
+    ></div>
+    <div class="about-h1-text">
+      <div class="about-h1-mark">H₁ · the actual reason</div>
+      <h2 class="about-h1-name">i am turning thirty and bored<br>out of my mind.</h2>
+      <p class="about-h1-body">
+        The polished bio is true. I am a systems architect. I do read a lot. I do travel.
+        But the bio leaves out the part where, for most of my twenties, I was
+        <strong>quietly furious</strong> that the world I'd been handed felt so small.
+      </p>
+      <p class="about-h1-body">
+        The "null hypothesis" isn't a clever statistical metaphor I picked up at a dinner party.
+        It's the diagnosis. The default — wake up, work, scroll, sleep, repeat — was the noise
+        I was supposed to accept as signal. So I started <strong>looking for the alternative</strong>,
+        in places I wasn't supposed to look. This blog is the lab notebook.
+      </p>
+      <p class="about-h1-body">
+        I'm not selling a productivity system. I'm not on LinkedIn. I'm not a coach.
+        I'm a person who writes things down so they stop rattling around at 2 AM.
+      </p>
+      <a href="#" class="about-h1-myst">↳ a playlist i listen to while writing</a>
+    </div>
+  </div>
+
+  <footer>
+    <div class="footer-left">
+      <div class="footer-name">The Null Hypothesis</div>
+      <div class="footer-tag h0x">Reject the null.</div>
+      <div class="footer-tag h1x">H₁ confirmed.</div>
+    </div>
+    <div class="footer-links">
+      <a href="/writing">Writing</a>
+      <a href="/travel">Travel</a>
+    </div>
+  </footer>
+
+</BaseLayout>
