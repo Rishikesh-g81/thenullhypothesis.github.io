@@ -27,7 +27,7 @@ html[data-mode="h1"] .h0x { display: none !important; }
 
 /* ── RESET ───────────────────────────────────────────────── */
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-html { -webkit-font-smoothing: antialiased; }
+html { -webkit-font-smoothing: antialiased; font-size: 130%; }
 body {
   font-family: 'Inter', sans-serif;
   background: var(--bg);
