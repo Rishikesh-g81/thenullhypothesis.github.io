@@ -359,6 +359,7 @@ footer {
   height: 320px; background: #000;
   display: flex; align-items: center; justify-content: center;
   cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
 }
 html[data-mode="h1"] .anomaly { background: #f4f0ea; }
 .anomaly-cursor {
@@ -366,10 +367,17 @@ html[data-mode="h1"] .anomaly { background: #f4f0ea; }
   font-size: 4rem; color: rgba(200,67,47,0.3);
   animation: blink 1.1s steps(2) infinite;
   transition: color 0.3s, transform 0.2s;
+  user-select: none;
 }
-.anomaly:hover .anomaly-cursor { color: var(--accent); transform: scale(1.1); }
+/* hover only on devices that support it — prevents tap-flicker on touch */
+@media (hover: hover) {
+  .anomaly:hover .anomaly-cursor { color: var(--accent); transform: scale(1.1); }
+  html[data-mode="h1"] .anomaly:hover .anomaly-cursor { color: #0d6b4a; }
+}
+/* touch feedback via active instead */
+.anomaly:active .anomaly-cursor { color: var(--accent); transform: scale(0.95); }
 html[data-mode="h1"] .anomaly-cursor { color: rgba(13,107,74,0.3); }
-html[data-mode="h1"] .anomaly:hover .anomaly-cursor { color: #0d6b4a; }
+html[data-mode="h1"] .anomaly:active .anomaly-cursor { color: #0d6b4a; }
 
 /* ── TOAST ───────────────────────────────────────────────── */
 .toast {
@@ -531,6 +539,9 @@ html[data-mode="h1"] .anomaly:hover .anomaly-cursor { color: #0d6b4a; }
   .t-map { height: 150px; }
 
   footer { padding: 2rem 1.4rem; flex-direction: column; align-items: flex-start; gap: 1.2rem; }
+
+  .anomaly { height: 180px; }
+  .anomaly-cursor { font-size: 2.8rem; }
 
   .post-wrap { padding: 1.8rem 1.4rem; }
   .post-header h1 { font-size: clamp(1.6rem, 6vw, 2.2rem); }
